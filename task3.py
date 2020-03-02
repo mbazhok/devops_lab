@@ -5,7 +5,7 @@ words = initstring.split(' ')
 
 output = ''
 for i in words:
-	output += i[::-1]
-	output += ' ' 
+    output += i[::-1]
+    output += ' '
 
 print(output[:-1])
