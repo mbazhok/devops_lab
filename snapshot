@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+
+import psutil
+from time import gmtime, strftime
+import threading
+import json
+import argparse
+
+
+class Snapshot:
+
+    def __init__(self):
+        self.cpu = psutil.getloadavg()
+        self.disk = psutil.disk_usage('/').used
+        self.vm = psutil.virtual_memory().available
+        self.io = psutil.net_io_counters(pernic=False,
+                                         nowrap=True).packets_recv
+        self.net = psutil.net_if_stats()
+
+    def __str__(self):
+        return 'CPU load : %s,\nDisk used : %s,\nVM available : %s,\nIO \
+        packets received : %s,\nNetwork interface cards : %s\n\n\n' % \
+            (self.cpu, self.disk, self.vm,
+             self.io, self.net)
+
+
+def outtxt():
+    f = open("report.txt", "a+")
+    a = Snapshot()
+    pr = str(a)
+    time = strftime('%d %b %Y %H:%M:%S', gmtime())
+    global i
+    i += 1
+    print('Snapshot %d : %s' % (i, time))
+    f.write('SNAPSHOT %d : %s\n' % (i, time))
+    f.write(pr)
+    del a
+    f.close()
+    threading.Timer(WAIT_SECONDS, outtxt).start()
+
+
+def outjson():
+    global i
+    i += 1
+    a = Snapshot()
+    time = strftime('%d %b %Y %H:%M:%S', gmtime())
+    f = open("report.json", "a+")
+
+    out = {
+        'SNAPSHOT': i,
+        'Time stamp': time,
+        'CPU': a.cpu,
+        'Disk': a.disk,
+        'VM': a.vm,
+        'IO': a.io,
+        'Net': a.net
+    }
+
+    f.write(json.dumps(out, indent=4, sort_keys=False))
+    f.write('\n')
+    f.close()
+    print('Snapshot %d : %s' % (i, time))
+    threading.Timer(WAIT_SECONDS, outjson).start()
+
+
+parser = argparse.ArgumentParser(description='Does snapshots \
+    of specific data.')
+parser.add_argument('period', metavar='N', type=int, default=300,
+                    nargs='?', help='period of making a new one')
+parser.add_argument('format', metavar='format',
+                    help='format of output file (txt and json \
+                    are avaliable)', type=str, nargs='+',
+                    choices=['txt', 'json'])
+
+WAIT_SECONDS = parser.parse_args().period
+i = 0
+
+
+if parser.parse_args().format[0] == 'txt':
+    outtxt()
+elif parser.parse_args().format[0] == 'json':
+    outjson()
