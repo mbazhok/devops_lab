@@ -7,7 +7,7 @@ matrix = []
 
 i = 0
 while i < size:
-    matrix.append(list(input().split(' ')))
+    matrix.append(list(input().split()))
     i += 1
 
 diag1 = 0
