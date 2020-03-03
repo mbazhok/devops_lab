@@ -7,7 +7,7 @@ if num < 10:
     quit()
 
 guess = []
-for delim in [9, 8, 7, 6, 5, 4, 3, 2]:
+for delim in range(9, 1, -1):
     while num % delim == 0:
         num = num / delim
         guess.append(delim)
