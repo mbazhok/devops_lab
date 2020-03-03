@@ -18,8 +18,5 @@ if len(guess) < 2:
 
 guess.sort()
 
-res = ''
-for i in guess:
-    res += str(i)
-
+res = ''.join(map(str, guess))
 print(res)
