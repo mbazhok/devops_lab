@@ -5,10 +5,8 @@ size = int(input())
 
 matrix = []
 
-i = 0
-while i < size:
+for i in range(size):
     matrix.append(list(input().split()))
-    i += 1
 
 diag1 = 0
 diag2 = 0
