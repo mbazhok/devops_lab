@@ -27,7 +27,7 @@ args = parser.parse_args()
 
 
 pswd = getpass.getpass(prompt='Password: ', stream=None)
-r = requests.get(str('https://api.github.com/repos/' + args.repo),
+r = requests.get('https://api.github.com/repos/' + args.repo,
                  auth=(args.user[0], pswd))
 
 if r.status_code == 200:
