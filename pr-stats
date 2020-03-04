@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+import requests
+import getpass
+import argparse
+
+parser = argparse.ArgumentParser(
+    description='Gives specific information from github \
+     via api.\n Initially, operators were made for pull request page.')
+parser.add_argument('user', metavar='<user>', type=str,
+                    nargs='+', help='github account')
+parser.add_argument('--repo', metavar='<repo>', type=str,
+                    nargs='?', help='github repository, \
+                    writes in format "--repo user/repository{/...}".\
+                     Example: --repo alenaPy/devops_lab/pulls/28',
+                    default='alenaPy/devops_lab/pulls/28')
+parser.add_argument('--basic', action='store_true',
+                    help='basic merge/closed info (if exist)')
+parser.add_argument('--comments', action='store_true', help='comments info')
+parser.add_argument('--lines', action='store_true',
+                    help='amount of added/deleted lines')
+parser.add_argument('--date', action='store_true',
+                    help='creation/update date info')
+parser.add_argument('--version', action='version',
+                    version='pr-stats v0.1 created by Maksim Bazhok')
+
+args = parser.parse_args()
+
+# if args.version:
+#     print('pr-stats: version 0.1')
+#     print('created by Maksim Bazhok')
+#     quit()
+
+pswd = getpass.getpass(prompt='Password: ', stream=None)
+r = requests.get(str('https://api.github.com/repos/' + args.repo),
+                 auth=(args.user[0], pswd))
+
+if r.status_code == 200:
+    print('\nGreetings %s!' % args.user[0])
+elif r.status_code == 401:
+    print('Wrong credentials. Closing.')
+    quit()
+
+
+try:
+    print('\nTitle: ', r.json()['title'])
+    if args.basic:
+        print('\nMerged at: ', r.json()['merged_at'])
+        print('Closed at: ', r.json()['closed_at'])
+    if args.comments:
+        print('\nNumber of comments: ', r.json()['comments'])
+        print('Number of review comments: ', r.json()['review_comments'])
+    if args.lines:
+        print('\nLines added: ', r.json()['additions'])
+        print('Lines deleted: ', r.json()['deletions'])
+    if args.date:
+        print('\nCreated at: ', r.json()['created_at'])
+        print('Updated at: ', r.json()['updated_at'])
+except Exception as e:
+    print('Looks like there are no required variables at your repository.')
