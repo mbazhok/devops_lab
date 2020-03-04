@@ -8,13 +8,13 @@ matrix = []
 for i in range(size):
     matrix.append(list(input().split()))
 
-diag1 = 0
-diag2 = 0
+dg1 = 0
+dg2 = 0
 
 for i in range(size):
-    diag1 += int(matrix[i][i])
+    dg1 += int(matrix[i][i])
 
 for i in range(size):
-    diag2 += int(matrix[i][-1 * (i + 1))
+    dg2 += int(matrix[i][-1 * (i + 1)])
 
-print(abs(diag1 - diag2))
+print(abs(dg1 - dg2))
