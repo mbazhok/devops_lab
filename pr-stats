@@ -25,10 +25,6 @@ parser.add_argument('--version', action='version',
 
 args = parser.parse_args()
 
-# if args.version:
-#     print('pr-stats: version 0.1')
-#     print('created by Maksim Bazhok')
-#     quit()
 
 pswd = getpass.getpass(prompt='Password: ', stream=None)
 r = requests.get(str('https://api.github.com/repos/' + args.repo),
