@@ -11,10 +11,10 @@ for i in range(size):
 diag1 = 0
 diag2 = 0
 
-for i in range(0, size, 1):
+for i in range(size):
     diag1 += int(matrix[i][i])
 
-for i in range(0, size, 1):
-    diag2 += int(matrix[i][size - i - 1])
+for i in range(size):
+    diag2 += int(matrix[i][-1 * (i + 1))
 
 print(abs(diag1 - diag2))
