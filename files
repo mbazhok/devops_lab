@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+
+import os
+import argparse
+
+
+arr = []
+
+
+parser = argparse.ArgumentParser(
+    description='Search for files in directory. With both\
+     --name and --date flags it will sort only by name.')
+
+parser.add_argument('path', metavar='<path>', type=str,
+                    nargs='+', help='your target directory')
+
+parser.add_argument('--filter', metavar='<extension>', type=str,
+                    nargs='?', help='type of file to filter',
+                    default='none')
+
+parser.add_argument('--recursive', action='store_true',
+                    help='recursive search')
+parser.add_argument('--name', action='store_true',
+                    help='sort by name of file')
+parser.add_argument('--date', action='store_true',
+                    help='sort by update time')
+
+args = parser.parse_args()
+basepath = args.path[0]
+ext = args.filter
+
+
+# search for files recursively
+def list_files(path):
+    with os.scandir(path) as entries:
+        for entry in entries:
+            if entry.is_file():
+                arr.append([entry.name, os.path.getctime(entry)])
+            elif entry.is_dir():
+                list_files(entry.path)
+
+if args.recursive:
+    list_files(basepath)
+else:
+    with os.scandir(basepath) as entries:
+        for entry in entries:
+            if entry.is_file():
+                arr.append([entry.name, os.path.getctime(entry)])
+
+if args.name:
+    arr.sort()
+elif args.date:
+    arr.sort(key=lambda x: x[1])
+
+if args.filter is None:
+    print('Invalid extension. Please type something like "--filter txt"')
+    quit()
+elif args.filter != 'none':
+    for i in arr:
+        filename, file_extension = os.path.splitext(i[0])
+        if file_extension == ('.' + ext):
+            print(i[0])
+else:
+    for i in arr:
+        print(i[0])
