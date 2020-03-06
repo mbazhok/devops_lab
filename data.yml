@@ -1,0 +1,13 @@
+apache_vhosts:
+- servername: testserver
+  documentroot: /www/testdomain
+  serveradmin: testadmin
+  directorypath: /home/student/mydirectory
+- servername: test2server
+  documentroot: /www/testdomain2
+  serveradmin: testadmin2
+  directorypath: /home/student/mydirectory2
+- servername: test3server
+  documentroot: /www/testdomain3
+  serveradmin: testadmin3
+  directorypath: /home/student/mydirectory3
